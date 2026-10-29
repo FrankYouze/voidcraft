@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleDocumentTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleTypeName</key>
+      <string>Voidcraft Canvas</string>
+      <key>CFBundleTypeExtensions</key>
+      <array>
+        <string>vcraft</string>
+      </array>
+      <key>CFBundleTypeIconFile</key>
+      <string>icon.icns</string>
+      <key>CFBundleTypeRole</key>
+      <string>Editor</string>
+      <key>LSHandlerRank</key>
+      <string>Default</string>
+      <key>LSItemContentTypes</key>
+      <array>
+        <string>app.voidcraft.studio.canvas</string>
+      </array>
+    </dict>
+  </array>
+</dict>
+</plist>

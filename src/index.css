@@ -1,0 +1,139 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  * {
+    border-color: rgb(255 255 255 / 0.08);
+  }
+
+  html {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: #0a0a0a;
+    color: #fafafa;
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  #root {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(255 255 255 / 0.1);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(255 255 255 / 0.2);
+  }
+}
+
+@layer components {
+  .toolbar-row {
+    container-type: inline-size;
+  }
+
+  .toolbar-tools {
+    position: static;
+  }
+
+  @media (min-resolution: 2dppx) and (min-width: 1280px) {
+    .toolbar-row {
+      left: 260px !important;
+    }
+
+    .topbar-icon-button {
+      width: 38px;
+      height: 38px;
+      padding: 8px;
+    }
+
+    .topbar-icon-button svg,
+    .toolbar-view-controls svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .topbar-title-box {
+      width: 144px;
+      font-size: 16px;
+    }
+
+    .topbar-title-box > div > span {
+      font-size: 16px;
+    }
+
+    .toolbar-view-controls > button {
+      width: 38px;
+      height: 38px;
+    }
+
+    .toolbar-view-controls > span {
+      font-size: 12px;
+      min-width: 48px;
+    }
+
+    .toolbar-tools .tool-button {
+      width: 38px;
+      height: 38px;
+    }
+
+    .toolbar-tools .tool-button svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .toolbar-tools .tool-button > span {
+      font-size: 9px;
+    }
+  }
+
+  @container (min-width: 660px) {
+    .toolbar-tools {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  .glass {
+    border-radius: 16px;
+    border: 1px solid rgb(255 255 255 / 0.08);
+    background: rgb(255 255 255 / 0.04);
+    backdrop-filter: blur(24px);
+    box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.06);
+  }
+
+  .glass-strong {
+    border-radius: 16px;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    background: rgb(255 255 255 / 0.06);
+    backdrop-filter: blur(32px);
+    box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.08);
+  }
+}
