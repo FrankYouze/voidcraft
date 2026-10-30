@@ -86,7 +86,7 @@ export function parseDrawingClipboard(contents: string): DrawingElement[] | null
 
 function isDrawingElement(value: unknown): value is DrawingElement {
   if (!isRecord(value)) return false;
-  const types = ["rectangle", "ellipse", "diamond", "arrow", "line", "text", "image"];
+  const types = ["rectangle", "ellipse", "diamond", "arrow", "line", "brush", "text", "image"];
   return typeof value.id === "string"
     && types.includes(String(value.type))
     && [value.x1, value.y1, value.x2, value.y2, value.strokeWidth].every((number) => typeof number === "number" && Number.isFinite(number))
@@ -94,7 +94,8 @@ function isDrawingElement(value: unknown): value is DrawingElement {
     && typeof value.fill === "string"
     && (value.text === undefined || typeof value.text === "string")
     && (value.src === undefined || typeof value.src === "string")
-    && (value.bend === undefined || isPoint(value.bend));
+    && (value.bend === undefined || isPoint(value.bend))
+    && (value.points === undefined || (Array.isArray(value.points) && value.points.every(isPoint)));
 }
 
 function isTablePosition(value: unknown): value is TablePosition {

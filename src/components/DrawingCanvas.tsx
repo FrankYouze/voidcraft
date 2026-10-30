@@ -176,6 +176,16 @@ export default function DrawingCanvas({
       return;
     }
 
+    if (tool === "brush") {
+      setIsDrawing(true);
+      setDraft({
+        id: crypto.randomUUID(), type: "brush",
+        x1: world.x, y1: world.y, x2: world.x, y2: world.y,
+        points: [world], stroke: strokeColor, fill: "transparent", strokeWidth, opacity, strokeStyle,
+      });
+      return;
+    }
+
     if (tool === "rectangle" || tool === "ellipse" || tool === "diamond" || tool === "arrow" || tool === "line") {
       setIsDrawing(true);
       const newEl: DrawingElement = {
@@ -292,7 +302,15 @@ export default function DrawingCanvas({
     }
 
     if (isDrawing && draft) {
-      setDraft({ ...draft, x2: world.x, y2: world.y });
+      if (draft.type === "brush") {
+        const points = draft.points ?? [];
+        const last = points[points.length - 1];
+        if (!last || Math.hypot(world.x - last.x, world.y - last.y) >= 1 / zoom) {
+          setDraft({ ...draft, x1: Math.min(draft.x1, world.x), y1: Math.min(draft.y1, world.y), x2: Math.max(draft.x2, world.x), y2: Math.max(draft.y2, world.y), points: [...points, world] });
+        }
+      } else {
+        setDraft({ ...draft, x2: world.x, y2: world.y });
+      }
       return;
     }
 
@@ -312,6 +330,7 @@ export default function DrawingCanvas({
           x1: start.x1 + dx, y1: start.y1 + dy,
           x2: start.x2 + dx, y2: start.y2 + dy,
           ...(start.bend ? { bend: { x: start.bend.x + dx, y: start.bend.y + dy } } : {}),
+          ...(start.points ? { points: start.points.map((point) => ({ x: point.x + dx, y: point.y + dy })) } : {}),
         };
       });
       setElements(updated);
@@ -328,7 +347,7 @@ export default function DrawingCanvas({
     if (isDrawing && draft) {
       const w = Math.abs(draft.x2 - draft.x1);
       const h = Math.abs(draft.y2 - draft.y1);
-      if (w > 3 || h > 3) {
+      if ((draft.type === "brush" && (draft.points?.length ?? 0) > 0) || w > 3 || h > 3) {
         setElements([...elements, draft]);
       }
       setIsDrawing(false);
@@ -492,6 +511,11 @@ function DrawingShape({ el, selected, zoom }: { el: DrawingElement; selected: bo
     );
   } else if (el.type === "line") {
     shape = <line x1={el.x1} y1={el.y1} x2={el.x2} y2={el.y2} {...common} />;
+  } else if (el.type === "brush") {
+    const points = el.points ?? [{ x: el.x1, y: el.y1 }, { x: el.x2, y: el.y2 }];
+    shape = points.length === 1
+      ? <circle cx={points[0].x} cy={points[0].y} r={Math.max(0.5, el.strokeWidth / 2)} fill={el.stroke} opacity={(el.opacity ?? 100) / 100} />
+      : <polyline points={points.map((point) => `${point.x},${point.y}`).join(" ")} {...common} fill="none" />;
   } else if (el.type === "arrow") {
     const control = el.bend ?? { x: (el.x1 + el.x2) / 2, y: (el.y1 + el.y2) / 2 };
     const angle = Math.atan2(el.y2 - control.y, el.x2 - control.x);
@@ -600,6 +624,12 @@ function hitTest(elements: DrawingElement[], point: Point): DrawingElement | nul
       }
       continue;
     }
+    if (el.type === "brush") {
+      const points = el.points ?? [];
+      if (points.length === 1 && Math.hypot(point.x - points[0].x, point.y - points[0].y) < 8) return el;
+      if (points.some((current, index) => index > 0 && pointToLineDist(point, points[index - 1], current) < 8)) return el;
+      continue;
+    }
     if (el.type === "line" || el.type === "arrow") {
       const dist = el.type === "arrow" && el.bend
         ? pointToQuadraticDist(point, { x: el.x1, y: el.y1 }, el.bend, { x: el.x2, y: el.y2 })
@@ -669,6 +699,10 @@ function isInBox(el: DrawingElement, x1: number, y1: number, x2: number, y2: num
   if (el.type === "text") {
     const metrics = getTextMetrics(el);
     return el.x1 < x2 && el.x1 + metrics.width > x1 && metrics.top < y2 && metrics.bottom > y1;
+  }
+  if (el.type === "brush") {
+    const points = el.points ?? [];
+    return points.some((point) => point.x >= x1 && point.x <= x2 && point.y >= y1 && point.y <= y2);
   }
   if (el.type === "line" || el.type === "arrow") {
     // Check if either endpoint is inside the box

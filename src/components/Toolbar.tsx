@@ -1,6 +1,6 @@
 import { cloneElement, memo } from "react";
 import type { Tool } from "../types";
-import { ArrowRight, Circle, Database, Diamond, Grid3x3, Hand, ImagePlus, Maximize2, Minus, MousePointer2, Plus, Route, Square, Trash2, Type, ZoomOut } from "lucide-react";
+import { ArrowRight, Brush, Circle, Database, Diamond, Grid3x3, Hand, ImagePlus, Maximize2, Minus, MousePointer2, Plus, Route, Square, Trash2, Type, ZoomOut } from "lucide-react";
 
 type Props = {
   tool: Tool; setTool: (tool: Tool) => void; onDelete: () => void;
@@ -18,28 +18,29 @@ const tools: { id: Tool; icon: React.ReactNode; label: string; shortcut: string 
   { id: "diamond", icon: <Diamond size={17} />, label: "Diamond", shortcut: "D" },
   { id: "arrow", icon: <ArrowRight size={17} />, label: "Arrow", shortcut: "A" },
   { id: "line", icon: <Minus size={17} />, label: "Line", shortcut: "L" },
+  { id: "brush", icon: <Brush size={17} />, label: "Brush", shortcut: "P" },
   { id: "text", icon: <Type size={17} />, label: "Text", shortcut: "X" },
   { id: "pan", icon: <Hand size={17} />, label: "Pan", shortcut: "H" },
 ];
 
 function Toolbar({ tool, setTool, onDelete, zoom, onZoomIn, onZoomOut, onResetView, showDbml, setShowDbml, showGrid, setShowGrid, onImportImage, relationshipRouting, setRelationshipRouting }: Props) {
   return (
-    <div data-canvas-chrome="true" className="toolbar-row absolute top-3 right-4 z-30 flex items-center justify-between pointer-events-none" style={{ left: 220 }}>
-      <div className="toolbar-tools glass p-0.5 flex items-center gap-0 pointer-events-auto" style={{ borderRadius: 12 }}>
-        {tools.map((item) => <button key={item.id} onClick={() => setTool(item.id)} title={`${item.label} (${item.shortcut})`} aria-label={`${item.label}, shortcut ${item.shortcut}`} className={`tool-button relative w-8 h-8 flex items-center justify-center rounded-lg transition-colors ${tool === item.id ? "bg-ink-50 text-ink-990" : "text-ink-400 hover:text-ink-100 hover:bg-white/5"}`}>{cloneElement(item.icon as React.ReactElement<{ size: number }>, { size: 17 })}<span className={`absolute right-0.5 bottom-0.5 text-[8px] leading-none font-mono ${tool === item.id ? "text-ink-600" : "text-ink-500"}`}>{item.shortcut}</span></button>)}
-        <button onClick={onImportImage} title="Import image (I)" aria-label="Import image, shortcut I" className="tool-button relative w-8 h-8 flex items-center justify-center rounded-lg text-ink-400 hover:text-ink-100 hover:bg-white/5"><ImagePlus size={16} /><span className="absolute right-0.5 bottom-0.5 text-[8px] leading-none font-mono text-ink-500">I</span></button>
+    <div data-canvas-chrome="true" className="toolbar-row contents">
+      <div className="toolbar-tools glass col-start-2 justify-self-center p-0.5 flex items-center gap-2 pointer-events-auto" style={{ borderRadius: 8 }}>
+        {tools.map((item) => <button key={item.id} onClick={() => setTool(item.id)} title={`${item.label} (${item.shortcut})`} aria-label={`${item.label}, shortcut ${item.shortcut}`} className={`tool-button relative flex items-center justify-center rounded-md transition-colors ${tool === item.id ? "bg-ink-50 text-ink-990" : "text-ink-400 hover:text-ink-100 hover:bg-white/5"}`}>{cloneElement(item.icon as React.ReactElement<{ size: number }>, { size: 17 })}<span className={`absolute right-0.5 bottom-0.5 leading-none font-mono ${tool === item.id ? "text-ink-600" : "text-ink-500"}`}>{item.shortcut}</span></button>)}
+        <button onClick={onImportImage} title="Import image (I)" aria-label="Import image, shortcut I" className="tool-button relative flex items-center justify-center rounded-lg text-ink-400 hover:text-ink-100 hover:bg-white/5"><ImagePlus size={16} /><span className="absolute right-0.5 bottom-0.5 leading-none font-mono text-ink-500">I</span></button>
         <span className="w-px h-6 bg-white/10 mx-1" />
-        <button onClick={onDelete} title="Delete selected (Delete / Backspace)" aria-label="Delete selected, shortcut Delete or Backspace" className="tool-button relative w-8 h-8 flex items-center justify-center rounded-lg text-ink-400 hover:bg-red-500/10 hover:text-red-400"><Trash2 size={16} /><span className="absolute right-0.5 bottom-0.5 text-[7px] leading-none font-mono text-ink-500">Del</span></button>
+        <button onClick={onDelete} title="Delete selected (Delete / Backspace)" aria-label="Delete selected, shortcut Delete or Backspace" className="tool-button relative flex items-center justify-center rounded-lg text-ink-400 hover:bg-red-500/10 hover:text-red-400"><Trash2 size={16} /><span className="absolute right-0.5 bottom-0.5 text-[7px] leading-none font-mono text-ink-500">Del</span></button>
       </div>
-      <div className="toolbar-view-controls glass ml-auto p-0.5 flex items-center gap-0 pointer-events-auto" style={{ borderRadius: 12 }}>
-        <button onClick={onZoomOut} title="Zoom out" className="w-8 h-8 flex items-center justify-center rounded-lg text-ink-400 hover:text-ink-100 hover:bg-white/5"><ZoomOut size={17} /></button>
-        <span className="text-[10px] text-center text-ink-300 font-mono px-1 min-w-10">{Math.round(zoom * 100)}%</span>
-        <button onClick={onZoomIn} title="Zoom in" className="w-8 h-8 flex items-center justify-center rounded-lg text-ink-400 hover:text-ink-100 hover:bg-white/5"><Plus size={17} /></button>
-        <button onClick={onResetView} title="Reset view" className="w-8 h-8 flex items-center justify-center rounded-lg text-ink-400 hover:text-ink-100 hover:bg-white/5"><Maximize2 size={17} /></button>
-        <span className="w-px h-6 bg-white/10 mx-1" />
-        <button onClick={() => setShowGrid(!showGrid)} title="Toggle grid (G)" className={`w-8 h-8 flex items-center justify-center rounded-lg ${showGrid ? "bg-ink-50 text-ink-990" : "text-ink-400 hover:text-ink-100 hover:bg-white/5"}`}><Grid3x3 size={17} /></button>
-        <button onClick={() => setShowDbml(!showDbml)} title="Toggle schema editor (B)" aria-label="Toggle schema editor, shortcut B" className={`w-8 h-8 flex items-center justify-center rounded-lg ${showDbml ? "bg-ink-50 text-ink-990" : "text-ink-400 hover:text-ink-100 hover:bg-white/5"}`}><Database size={17} /></button>
-        <button onClick={() => setRelationshipRouting(relationshipRouting === "curved" ? "orthogonal" : "curved")} title={`Relationship routing: ${relationshipRouting}. Click to switch`} aria-label={`Relationship routing ${relationshipRouting}; toggle routing style`} className={`w-8 h-8 flex items-center justify-center rounded-lg ${relationshipRouting === "orthogonal" ? "bg-ink-50 text-ink-990" : "text-ink-400 hover:text-ink-100 hover:bg-white/5"}`}><Route size={17} /></button>
+      <div className="toolbar-view-controls glass col-start-3 justify-self-end p-0.5 flex items-center gap-0 pointer-events-auto" style={{ borderRadius: 8 }}>
+        <button onClick={onZoomOut} title="Zoom out" className="view-control-button flex items-center justify-center rounded-lg text-ink-400 hover:text-ink-100 hover:bg-white/5"><ZoomOut size={17} /></button>
+        <span className="text-center text-ink-300 font-mono px-1">{Math.round(zoom * 100)}%</span>
+        <button onClick={onZoomIn} title="Zoom in" className="view-control-button flex items-center justify-center rounded-lg text-ink-400 hover:text-ink-100 hover:bg-white/5"><Plus size={17} /></button>
+        <button onClick={onResetView} title="Reset view" className="view-control-button flex items-center justify-center rounded-lg text-ink-400 hover:text-ink-100 hover:bg-white/5"><Maximize2 size={17} /></button>
+        {/* <span className="w-px h-6 bg-white/10 mx-1" /> */}
+        <button onClick={() => setShowGrid(!showGrid)} title="Toggle grid (G)" className={`view-control-button flex items-center justify-center rounded-lg ${showGrid ? "bg-ink-50 text-ink-990" : "text-ink-400 hover:text-ink-100 hover:bg-white/5"}`}><Grid3x3 size={17} /></button>
+        <button onClick={() => setShowDbml(!showDbml)} title="Toggle schema editor (B)" aria-label="Toggle schema editor, shortcut B" className={`view-control-button flex items-center justify-center rounded-lg ${showDbml ? "bg-ink-50 text-ink-990" : "text-ink-400 hover:text-ink-100 hover:bg-white/5"}`}><Database size={17} /></button>
+        <button onClick={() => setRelationshipRouting(relationshipRouting === "curved" ? "orthogonal" : "curved")} title={`Relationship routing: ${relationshipRouting}. Click to switch`} aria-label={`Relationship routing ${relationshipRouting}; toggle routing style`} className={`view-control-button flex items-center justify-center rounded-lg ${relationshipRouting === "orthogonal" ? "bg-ink-50 text-ink-990" : "text-ink-400 hover:text-ink-100 hover:bg-white/5"}`}><Route size={17} /></button>
       </div>
     </div>
   );

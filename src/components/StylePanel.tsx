@@ -28,10 +28,10 @@ function StylePanel(props: Props) {
         <p className="text-[10px] uppercase tracking-wider text-ink-500 mb-2">Stroke</p>
         <div className="flex gap-2">{strokes.map((color) => <button key={color} aria-label={`Stroke ${color}`} onClick={() => onStrokeColor(color)} className={`w-6 h-6 rounded-md border ${strokeColor === color ? "border-white ring-1 ring-white/40" : "border-white/10"}`} style={{ backgroundColor: color }} />)}</div>
       </section>
-      <section>
+      {tool !== "brush" && <section>
         <p className="text-[10px] uppercase tracking-wider text-ink-500 mb-2">Fill</p>
         <div className="flex gap-2">{fills.map((color) => <button key={color} aria-label={`Fill ${color}`} onClick={() => onFillColor(color)} className={`w-6 h-6 rounded-md border ${fillColor === color ? "border-white ring-1 ring-white/40" : "border-white/10"}`} style={{ backgroundColor: color === "transparent" ? "#101012" : color, backgroundImage: color === "transparent" ? "linear-gradient(45deg,#27272a 25%,transparent 25%,transparent 75%,#27272a 75%)" : undefined }} />)}</div>
-      </section>
+      </section>}
       <label className="block text-[10px] uppercase tracking-wider text-ink-500">Stroke width <span className="float-right text-ink-300">{strokeWidth}px</span><input className="mt-2 w-full accent-ink-200" type="range" min="1" max="8" value={strokeWidth} onChange={(event) => onStrokeWidth(Number(event.target.value))} /></label>
       <section>
         <p className="text-[10px] uppercase tracking-wider text-ink-500 mb-2">Stroke style</p>

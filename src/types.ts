@@ -2,17 +2,19 @@
 
 export type Point = { x: number; y: number };
 
-export type Tool = "select" | "rectangle" | "ellipse" | "diamond" | "arrow" | "line" | "text" | "pan" | "table";
+export type Tool = "select" | "rectangle" | "ellipse" | "diamond" | "arrow" | "line" | "brush" | "text" | "pan" | "table";
 
 export type DrawingElement = {
   id: string;
-  type: "rectangle" | "ellipse" | "diamond" | "arrow" | "line" | "text" | "image";
+  type: "rectangle" | "ellipse" | "diamond" | "arrow" | "line" | "brush" | "text" | "image";
   x1: number;
   y1: number;
   x2: number;
   y2: number;
   /** Quadratic curve control point for a bent arrow. */
   bend?: Point;
+  /** Freehand brush path in canvas coordinates. */
+  points?: Point[];
   stroke: string;
   fill: string;
   strokeWidth: number;

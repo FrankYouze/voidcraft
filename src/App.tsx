@@ -565,6 +565,7 @@ export default function App() {
         d: "diamond",
         a: "arrow",
         l: "line",
+        p: "brush",
         x: "text",
         h: "pan",
       };
@@ -1026,47 +1027,56 @@ export default function App() {
         {/* Top bar */}
         <div
           data-canvas-chrome="true"
-          className="topbar-controls absolute top-0 left-0 right-0 z-20 flex items-center gap-1.5 px-3 py-3 pointer-events-none"
+          className="topbar-controls absolute top-6 left-0 right-0 z-30 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 px-3 pointer-events-none"
         >
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="topbar-icon-button pointer-events-auto glass p-1.5 text-ink-300 hover:text-ink-50 transition-colors"
-            style={{ borderRadius: 12 }}
-          >
-            <Layers size={18} />
-          </button>
-          <button
-            onClick={() => void createCanvas()}
-            title="New canvas"
-            className="topbar-icon-button pointer-events-auto glass p-1.5 text-ink-300 hover:text-ink-50 transition-colors"
-            style={{ borderRadius: 12 }}
-          >
-            <Plus size={18} />
-          </button>
-
-          <div
-            className="topbar-title-box pointer-events-auto glass px-2 py-2 flex items-center gap-1.5 cursor-text w-[120px] shrink-0 overflow-hidden"
-            style={{ borderRadius: 12 }}
-            onClick={() => setEditingTitle(true)}
-          >
-            {editingTitle ? (
-              <input
-                autoFocus
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                onBlur={() => setEditingTitle(false)}
-                onKeyDown={(e) => e.key === "Enter" && setEditingTitle(false)}
-                className="font-semibold text-ink-50 text-sm bg-transparent outline-none border-b border-ink-400 min-w-0 w-full"
-              />
-            ) : (
-              <div className="flex min-w-0 w-full items-center gap-2">
-                <span className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap font-semibold text-ink-50 text-sm tracking-tight">
-                  {title}
-                </span>
-                <Pencil size={13} className="shrink-0 text-ink-500" />
-              </div>
-            )}
+          <div className="topbar-brand flex min-w-0 items-center gap-2">
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="topbar-icon-button pointer-events-auto glass shrink-0 p-1.5 flex items-center justify-center text-ink-300 hover:text-ink-50 transition-colors"
+              style={{ borderRadius: 8 }}
+            >
+              <Layers size={18} />
+            </button>
+            <div
+              className="topbar-title-box pointer-events-auto glass px-2 flex items-center gap-1.5 cursor-text shrink-0 overflow-hidden"
+              style={{ borderRadius: 8 }}
+              onClick={() => setEditingTitle(true)}
+            >
+              {editingTitle ? (
+                <input
+                  autoFocus
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  onBlur={() => setEditingTitle(false)}
+                  onKeyDown={(e) => e.key === "Enter" && setEditingTitle(false)}
+                  className="font-semibold text-ink-50 text-sm bg-transparent outline-none border-b border-ink-400 min-w-0 w-full"
+                />
+              ) : (
+                <div className="flex min-w-0 w-full items-center gap-2">
+                  <span className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap font-semibold text-ink-50 text-sm tracking-tight">
+                    {title}
+                  </span>
+                  <Pencil size={13} className="shrink-0 text-ink-500" />
+                </div>
+              )}
+            </div>
           </div>
+          <Toolbar
+            tool={tool}
+            setTool={setTool}
+            relationshipRouting={relationshipRouting}
+            setRelationshipRouting={setRelationshipRouting}
+            onDelete={handleDeleteSelected}
+            zoom={zoom}
+            onZoomIn={handleZoomIn}
+            onZoomOut={handleZoomOut}
+            onResetView={handleResetView}
+            showDbml={showDbml}
+            setShowDbml={setShowDbml}
+            showGrid={showGrid}
+            setShowGrid={setShowGrid}
+            onImportImage={handleImportImage}
+          />
         </div>
 
         {storageError && (
@@ -1145,6 +1155,7 @@ export default function App() {
             "diamond",
             "arrow",
             "line",
+            "brush",
             "text",
           ].includes(tool)}
           sidebarOpen={sidebarOpen}
@@ -1232,24 +1243,6 @@ export default function App() {
             />
           ))}
         </div>
-
-        {/* Toolbar */}
-        <Toolbar
-          tool={tool}
-          setTool={setTool}
-          relationshipRouting={relationshipRouting}
-          setRelationshipRouting={setRelationshipRouting}
-          onDelete={handleDeleteSelected}
-          zoom={zoom}
-          onZoomIn={handleZoomIn}
-          onZoomOut={handleZoomOut}
-          onResetView={handleResetView}
-          showDbml={showDbml}
-          setShowDbml={setShowDbml}
-          showGrid={showGrid}
-          setShowGrid={setShowGrid}
-          onImportImage={handleImportImage}
-        />
 
         {/* Hidden file input for image import */}
         <input
